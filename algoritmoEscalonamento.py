@@ -194,6 +194,18 @@ def main():
     thread_prioridades.start()
     thread_prioridades.join()
 
+    # saida do simulador: media de espera de cada algoritmo
+    nomes_algoritmos = ['FCFS', 'SJF', 'Prioridades']
+    medias_espera = [thread_fcfs.media_espera,
+                     thread_sjf.media_espera,
+                     thread_prioridades.media_espera]
+
+    print('Resumo das medias de espera:')
+    for posicao in range(len(nomes_algoritmos)):
+        print(f'{nomes_algoritmos[posicao]}: {medias_espera[posicao]:.2f}')
+
+    gerar_grafico(nomes_algoritmos, medias_espera)
+
 
 # Ponto de entrada do programa
 main()
