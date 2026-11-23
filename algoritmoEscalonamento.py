@@ -42,6 +42,40 @@ def pegar_tempo_chegada(processo):
     return processo.tempo_chegada
 
 
+# Thread algoritmo FCFS (FIRST-COME, FIRST-SERVED)
+class ThreadFCFS(threading.Thread):
+
+    def __init__(self, lista_processos):
+        threading.Thread.__init__(self)
+        self.lista_processos = list(lista_processos)
+        self.media_espera = 0.0
+
+    def escalonar(self):
+        # atende na ordem em que os processos chegaram
+        fila_aptos = sorted(self.lista_processos, key=pegar_tempo_chegada)
+
+        tempo_relogio = 0
+        soma_tempos_espera = 0
+
+        for processo in fila_aptos:
+            # se a cpu ficou livre antes do processo chegar, o relogio avanca
+            if tempo_relogio < processo.tempo_chegada:
+                tempo_relogio = processo.tempo_chegada
+
+            tempo_espera = tempo_relogio - processo.tempo_chegada
+            soma_tempos_espera += tempo_espera
+            print(f'FCFS -> {processo.identificacao} esperou {tempo_espera}')
+
+            tempo_relogio += processo.tempo_cpu
+
+        return soma_tempos_espera / len(fila_aptos)
+
+    def run(self):
+        print('Algoritmo FCFS')
+        self.media_espera = self.escalonar()
+        print(f'Media de espera FCFS: {self.media_espera:.2f}\n')
+
+
 # Funcao principal
 def main():
     lista_processos = ler_processos_csv(CAMINHO_CSV)
@@ -50,6 +84,11 @@ def main():
     for processo in lista_processos:
         print(f'{processo.identificacao} | chegada: {processo.tempo_chegada} '
               f'| cpu: {processo.tempo_cpu} | prioridade: {processo.prioridade}')
+    print()
+
+    thread_fcfs = ThreadFCFS(lista_processos)
+    thread_fcfs.start()
+    thread_fcfs.join()
 
 
 # Ponto de entrada do programa
