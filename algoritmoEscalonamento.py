@@ -124,6 +124,54 @@ class ThreadSJF(threading.Thread):
         print(f'Media de espera SJF: {self.media_espera:.2f}\n')
 
 
+# Thread algoritmo de PRIORIDADES (menor numero = maior prioridade)
+class ThreadPrioridades(threading.Thread):
+
+    def __init__(self, lista_processos):
+        threading.Thread.__init__(self)
+        self.lista_processos = list(lista_processos)
+        self.media_espera = 0.0
+
+    def escalonar(self):
+        processos_pendentes = sorted(self.lista_processos, key=pegar_tempo_chegada)
+        quantidade_processos = len(processos_pendentes)
+
+        tempo_relogio = 0
+        soma_tempos_espera = 0
+
+        while len(processos_pendentes) > 0:
+            # fila de aptos: processos que ja chegaram
+            fila_aptos = []
+            for processo in processos_pendentes:
+                if processo.tempo_chegada <= tempo_relogio:
+                    fila_aptos.append(processo)
+
+            # nenhum processo chegou ainda, o relogio avanca
+            if len(fila_aptos) == 0:
+                tempo_relogio += 1
+                continue
+
+            # escolhe o processo com a maior prioridade (menor numero)
+            processo_escolhido = fila_aptos[0]
+            for processo in fila_aptos:
+                if processo.prioridade < processo_escolhido.prioridade:
+                    processo_escolhido = processo
+
+            tempo_espera = tempo_relogio - processo_escolhido.tempo_chegada
+            soma_tempos_espera += tempo_espera
+            print(f'Prioridades -> {processo_escolhido.identificacao} esperou {tempo_espera}')
+
+            tempo_relogio += processo_escolhido.tempo_cpu
+            processos_pendentes.remove(processo_escolhido)
+
+        return soma_tempos_espera / quantidade_processos
+
+    def run(self):
+        print('Algoritmo de Prioridades')
+        self.media_espera = self.escalonar()
+        print(f'Media de espera Prioridades: {self.media_espera:.2f}\n')
+
+
 # Funcao principal
 def main():
     lista_processos = ler_processos_csv(CAMINHO_CSV)
@@ -141,6 +189,10 @@ def main():
     thread_sjf = ThreadSJF(lista_processos)
     thread_sjf.start()
     thread_sjf.join()
+
+    thread_prioridades = ThreadPrioridades(lista_processos)
+    thread_prioridades.start()
+    thread_prioridades.join()
 
 
 # Ponto de entrada do programa
