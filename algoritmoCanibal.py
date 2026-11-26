@@ -21,7 +21,6 @@ class Travessa:
         self.capacidade_porcoes = capacidade_porcoes
         self.porcoes_disponiveis = 0
 
-        # garante que so um canibal mexe na travessa por vez
         self.mutex_travessa = threading.Semaphore(1)
         # usado para acordar o cozinheiro quando a travessa esta vazia
         self.semaforo_travessa_vazia = threading.Semaphore(0)

@@ -1,7 +1,3 @@
-'''
-Simulador de Algoritmos de Escalonamento de Processos usando threads.
-Algoritmos: FCFS, SJF e Prioridades (todos nao preemptivos).
-'''
 
 import threading
 import csv
@@ -9,8 +5,6 @@ from graficoEscalonamento import gerar_grafico
 
 CAMINHO_CSV = 'datasetProcessos/dataset.csv'
 
-
-# Classe que representa o processo
 class Processo:
 
     def __init__(self, identificacao, tempo_chegada, tempo_cpu, prioridade):
@@ -20,7 +14,6 @@ class Processo:
         self.prioridade = prioridade
 
 
-# Le o arquivo .csv e cria a lista de processos
 def ler_processos_csv(caminho_arquivo):
     lista_processos = []
 
@@ -37,12 +30,9 @@ def ler_processos_csv(caminho_arquivo):
     return lista_processos
 
 
-# Funcao usada para ordenar os processos pelo tempo de chegada
 def pegar_tempo_chegada(processo):
     return processo.tempo_chegada
 
-
-# Thread algoritmo FCFS (FIRST-COME, FIRST-SERVED)
 class ThreadFCFS(threading.Thread):
 
     def __init__(self, lista_processos):
@@ -53,12 +43,12 @@ class ThreadFCFS(threading.Thread):
     def escalonar(self):
         # atende na ordem em que os processos chegaram
         fila_aptos = sorted(self.lista_processos, key=pegar_tempo_chegada)
-
+        print(fila_aptos)
         tempo_relogio = 0
         soma_tempos_espera = 0
 
         for processo in fila_aptos:
-            # se a cpu ficou livre antes do processo chegar, o relogio avanca
+            print(processo)
             if tempo_relogio < processo.tempo_chegada:
                 tempo_relogio = processo.tempo_chegada
 
