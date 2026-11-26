@@ -1,9 +1,11 @@
 
 import threading
 import csv
+import time
 from graficoEscalonamento import gerar_grafico
 
 CAMINHO_CSV = 'datasetProcessos/dataset.csv'
+SEGUNDOS_POR_UNIDADE_CPU = 0.1
 
 class Processo:
 
@@ -56,6 +58,9 @@ class ThreadFCFS(threading.Thread):
             soma_tempos_espera += tempo_espera
             print(f'FCFS -> {processo.identificacao} esperou {tempo_espera}')
 
+            print(f'FCFS -> {processo.identificacao} executando...')
+            time.sleep(processo.tempo_cpu * SEGUNDOS_POR_UNIDADE_CPU)
+
             tempo_relogio += processo.tempo_cpu
 
         return soma_tempos_espera / len(fila_aptos)
@@ -102,6 +107,9 @@ class ThreadSJF(threading.Thread):
             tempo_espera = tempo_relogio - processo_escolhido.tempo_chegada
             soma_tempos_espera += tempo_espera
             print(f'SJF -> {processo_escolhido.identificacao} esperou {tempo_espera}')
+
+            print(f'SJF -> {processo_escolhido.identificacao} executando...')
+            time.sleep(processo_escolhido.tempo_cpu * SEGUNDOS_POR_UNIDADE_CPU)
 
             tempo_relogio += processo_escolhido.tempo_cpu
             processos_pendentes.remove(processo_escolhido)
@@ -150,6 +158,9 @@ class ThreadPrioridades(threading.Thread):
             tempo_espera = tempo_relogio - processo_escolhido.tempo_chegada
             soma_tempos_espera += tempo_espera
             print(f'Prioridades -> {processo_escolhido.identificacao} esperou {tempo_espera}')
+
+            print(f'Prioridades -> {processo_escolhido.identificacao} executando...')
+            time.sleep(processo_escolhido.tempo_cpu * SEGUNDOS_POR_UNIDADE_CPU)
 
             tempo_relogio += processo_escolhido.tempo_cpu
             processos_pendentes.remove(processo_escolhido)
