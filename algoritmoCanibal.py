@@ -1,20 +1,13 @@
-'''
-Problema do Jantar dos Canibais usando threads e semaforos.
-N canibais comem de uma travessa que comporta M porcoes.
-Quando a travessa esvazia, um canibal acorda o cozinheiro,
-que coloca mais M porcoes na travessa.
-'''
+
 
 import threading
 import time
 import random
 
-QUANTIDADE_CANIBAIS = 5    # N
-CAPACIDADE_TRAVESSA = 3    # M
-DURACAO_JANTAR = 20        # segundos que o programa fica rodando
+QUANTIDADE_CANIBAIS = 5 
+CAPACIDADE_TRAVESSA = 3 
+DURACAO_JANTAR = 4 
 
-
-# Classe que representa a travessa compartilhada
 class Travessa:
 
     def __init__(self, capacidade_porcoes):
@@ -22,9 +15,7 @@ class Travessa:
         self.porcoes_disponiveis = 0
 
         self.mutex_travessa = threading.Semaphore(1)
-        # usado para acordar o cozinheiro quando a travessa esta vazia
         self.semaforo_travessa_vazia = threading.Semaphore(0)
-        # usado para avisar o canibal que a travessa foi enchida
         self.semaforo_travessa_cheia = threading.Semaphore(0)
 
     def servir_porcao(self, nome_canibal):
@@ -49,7 +40,6 @@ class Travessa:
         self.semaforo_travessa_cheia.release()
 
 
-# Thread que representa um canibal
 class Canibal(threading.Thread):
 
     def __init__(self, nome_canibal, travessa):
@@ -63,13 +53,11 @@ class Canibal(threading.Thread):
         time.sleep(random.uniform(0.5, 2))
 
     def run(self):
-        # longo jantar: o canibal se serve e come continuamente
         while True:
             self.travessa.servir_porcao(self.nome_canibal)
             self.comer()
 
 
-# Thread que representa o cozinheiro
 class Cozinheiro(threading.Thread):
 
     def __init__(self, travessa):
@@ -78,12 +66,10 @@ class Cozinheiro(threading.Thread):
         self.daemon = True
 
     def run(self):
-        # o cozinheiro dorme ate ser acordado e entao enche a travessa
         while True:
             self.travessa.encher_travessa()
 
 
-# Funcao principal
 def main():
     travessa = Travessa(CAPACIDADE_TRAVESSA)
 
@@ -98,5 +84,4 @@ def main():
     print('Fim do jantar')
 
 
-# Ponto de entrada do programa
 main()

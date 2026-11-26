@@ -1,8 +1,3 @@
-'''
-Gera o grafico comparativo das medias de espera
-de cada algoritmo de escalonamento.
-'''
-
 import matplotlib.pyplot as plt
 
 
@@ -11,7 +6,6 @@ def gerar_grafico(nomes_algoritmos, medias_espera):
 
     barras = plt.bar(nomes_algoritmos, medias_espera, color='#2a6fb0', width=0.5)
 
-    # escreve o valor da media em cima de cada barra
     for barra in barras:
         altura = barra.get_height()
         posicao_x = barra.get_x() + barra.get_width() / 2

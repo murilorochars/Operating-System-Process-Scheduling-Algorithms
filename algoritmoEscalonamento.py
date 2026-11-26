@@ -43,14 +43,11 @@ class ThreadFCFS(threading.Thread):
         self.media_espera = 0.0
 
     def escalonar(self):
-        # atende na ordem em que os processos chegaram
         fila_aptos = sorted(self.lista_processos, key=pegar_tempo_chegada)
-        print(fila_aptos)
         tempo_relogio = 0
         soma_tempos_espera = 0
 
         for processo in fila_aptos:
-            print(processo)
             if tempo_relogio < processo.tempo_chegada:
                 tempo_relogio = processo.tempo_chegada
 
@@ -71,7 +68,6 @@ class ThreadFCFS(threading.Thread):
         print(f'Media de espera FCFS: {self.media_espera:.2f}\n')
 
 
-# Thread algoritmo SJF (SHORTEST JOB FIRST)
 class ThreadSJF(threading.Thread):
 
     def __init__(self, lista_processos):
@@ -87,18 +83,15 @@ class ThreadSJF(threading.Thread):
         soma_tempos_espera = 0
 
         while len(processos_pendentes) > 0:
-            # fila de aptos: processos que ja chegaram
             fila_aptos = []
             for processo in processos_pendentes:
                 if processo.tempo_chegada <= tempo_relogio:
                     fila_aptos.append(processo)
 
-            # nenhum processo chegou ainda, o relogio avanca
             if len(fila_aptos) == 0:
                 tempo_relogio += 1
                 continue
 
-            # escolhe o processo com o menor tempo de cpu
             processo_escolhido = fila_aptos[0]
             for processo in fila_aptos:
                 if processo.tempo_cpu < processo_escolhido.tempo_cpu:
@@ -121,8 +114,6 @@ class ThreadSJF(threading.Thread):
         self.media_espera = self.escalonar()
         print(f'Media de espera SJF: {self.media_espera:.2f}\n')
 
-
-# Thread algoritmo de PRIORIDADES (menor numero = maior prioridade)
 class ThreadPrioridades(threading.Thread):
 
     def __init__(self, lista_processos):
@@ -138,18 +129,15 @@ class ThreadPrioridades(threading.Thread):
         soma_tempos_espera = 0
 
         while len(processos_pendentes) > 0:
-            # fila de aptos: processos que ja chegaram
             fila_aptos = []
             for processo in processos_pendentes:
                 if processo.tempo_chegada <= tempo_relogio:
                     fila_aptos.append(processo)
 
-            # nenhum processo chegou ainda, o relogio avanca
             if len(fila_aptos) == 0:
                 tempo_relogio += 1
                 continue
 
-            # escolhe o processo com a maior prioridade (menor numero)
             processo_escolhido = fila_aptos[0]
             for processo in fila_aptos:
                 if processo.prioridade < processo_escolhido.prioridade:
@@ -173,7 +161,6 @@ class ThreadPrioridades(threading.Thread):
         print(f'Media de espera Prioridades: {self.media_espera:.2f}\n')
 
 
-# Funcao principal
 def main():
     lista_processos = ler_processos_csv(CAMINHO_CSV)
 
@@ -195,7 +182,6 @@ def main():
     thread_prioridades.start()
     thread_prioridades.join()
 
-    # saida do simulador: media de espera de cada algoritmo
     nomes_algoritmos = ['FCFS', 'SJF', 'Prioridades']
     medias_espera = [thread_fcfs.media_espera,
                      thread_sjf.media_espera,
@@ -208,5 +194,4 @@ def main():
     gerar_grafico(nomes_algoritmos, medias_espera)
 
 
-# Ponto de entrada do programa
 main()
